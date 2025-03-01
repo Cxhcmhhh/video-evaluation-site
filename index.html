@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>舞蹈质量评价</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <video id="videoPlayer" src="https://Cxhcmhhh.github.io/video-evaluation-site/21.mp4" controls></video>
+    <form id="ratingForm">
+      <div class="stars">
+        <input type="radio" name="score" value="5" id="5"><label for="5">⭐</label>
+        <input type="radio" name="score" value="4" id="4"><label for="4">⭐</label>
+        <input type="radio" name="score" value="3" id="3"><label for="4">⭐</label>
+        <input type="radio" name="score" value="2" id="2"><label for="4">⭐</label>
+        <input type="radio" name="score" value="1" id="1"><label for="4">⭐</label>
+      </div>
+      <button id="submitBtn" type="button" disabled>提交评分（需观看完整视频）</button>
+    </form>
+  </div>
+  <script src="firebase.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
