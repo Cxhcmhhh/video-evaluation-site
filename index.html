@@ -94,22 +94,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js"></script>
     
     <script>
-        // Firebase
-        const firebaseConfig = {
-        apiKey: "AIzaSyBEuZajdAfhcyx08v31k53UgYnaG9anl3E",
-        authDomain: "dance-955d0.firebaseapp.com",
-        databaseURL: "https://dance-955d0-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "dance-955d0",
-        storageBucket: "dance-955d0.firebasestorage.app",
-        messagingSenderId: "45254835094",
-        appId: "1:45254835094:web:e38a39ea607685566bbbb7",
-        measurementId: "G-7PZ5GDLH1E"
-    };
-
-        // 初始化 Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
+        
         // 视频配置数据
         const videos = [
             { id: 'video1', url: 'https://Cxhcmhhh.github.io/video-evaluation-site/21.mp4' },
@@ -210,46 +195,6 @@
         }
 
         // 提交所有数据
-        document.getElementById('submitAll').addEventListener('click', async () => {
-            try {
-                const allData = [];
-                
-                document.querySelectorAll('.video-container').forEach(container => {
-                    const videoId = container.dataset.videoId;
-                    const formData = {
-                        video_id: videoId,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    };
-
-                    // 收集所有问题答案
-                    const inputs = container.querySelectorAll('input:checked');
-                    if (inputs.length !== 6) {
-                        throw new Error(`请完成 ${videoId} 的所有问题`);
-                    }
-
-                    inputs.forEach(input => {
-                        const [questionKey] = input.name.split('_').slice(1);
-                        formData[`q${questionKey}`] = input.value;
-                    });
-
-                    allData.push(formData);
-                });
-
-                // 批量提交到 Firebase
-                const batchRef = database.ref('evaluations').push();
-                await batchRef.set({
-                    response: allData,
-                    completed_at: firebase.database.ServerValue.TIMESTAMP
-                });
-
-                alert('所有评估已成功提交！');
-                window.location.reload();
-
-            } catch (error) {
-                alert(error.message);
-                console.error('提交错误:', error);
-            }
-        });
 
         // 初始化页面
         createVideoElements();
