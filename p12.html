@@ -71,7 +71,22 @@
         .star-rating label:hover {
             color: #ffd700;
         }
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
 
+        #exportCsv {
+            background: #17a2b8;
+            padding: 15px 40px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
         #submitAll {
             display: block;
             margin: 30px auto;
@@ -91,7 +106,10 @@
         <p>本段音乐歌词为: Love me, love me like that, Love me, give me some mad love</p>
     </div>
     <div class="video-grid" id="videoContainer"></div>
-    <button id="submitAll">提交全部评估</button>
+    <div class="button-group">
+        <button id="submitAll">提交全部评估</button>
+        <button id="exportCsv">导出CSV</button>
+    </div>
 
     <script>
         
@@ -102,7 +120,69 @@
             { id: 'video3', url: 'https://Cxhcmhhh.github.io/video-evaluation-site/usero3/4_3.mp4' },
             { id: 'video4', url: 'https://Cxhcmhhh.github.io/video-evaluation-site/usero4/4_3.mp4' }
         ];
+        document.getElementById('exportCsv').addEventListener('click', () => {
+            try {
+                const csvData = generateCsvData();
+                downloadCsv(csvData);
+            } catch (error) {
+                alert(error.message);
+            }
+        });
 
+        // 生成CSV数据
+        function generateCsvData() {
+            const headers = [
+                '视频ID', 
+                '编舞类型', 
+                '确定程度', 
+                '音乐匹配度', 
+                '流畅自然度', 
+                '歌词含义相关度', 
+                '歌词情感相关度'
+            ].join(',') + '\n';
+
+            const rows = [];
+            
+            // 遍历所有视频容器
+            document.querySelectorAll('.video-container').forEach(container => {
+                const videoId = container.dataset.videoId;
+                const answers = [];
+                
+                // 收集每个问题的答案
+                const inputs = container.querySelectorAll('input:checked');
+                if (inputs.length !== 6) {
+                    throw new Error(`请完成 ${videoId} 的所有问题`);
+                }
+
+                inputs.forEach(input => {
+                    answers.push(csvEscape(input.value)); // 处理特殊字符
+                });
+
+                rows.push([
+                    csvEscape(videoId),
+                    ...answers
+                ].join(','));
+            });
+
+            return headers + rows.join('\n');
+        }
+
+        // CSV特殊字符处理
+        function csvEscape(str) {
+            if (typeof str !== 'string') str = String(str);
+            return str.includes(',') ? `"${str.replace(/"/g, '""')}"` : str;
+        }
+
+        // 触发文件下载
+        function downloadCsv(csvData) {
+            const blob = new Blob(["\ufeff", csvData], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `舞蹈评估_${new Date().toLocaleString().replace(/[/:]/g,'-')}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
         // 动态生成视频和问卷
         function createVideoElements() {
             const container = document.getElementById('videoContainer');
@@ -197,6 +277,7 @@
         // 提交所有数据
 
         // 初始化页面
+        
         createVideoElements();
     </script>
 </body>
